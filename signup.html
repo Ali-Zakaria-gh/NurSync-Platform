@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinator Sign Up - NurSync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+    <!-- Left Branding Panel -->
+    <div class="login-left">
+        <div class="login-left-content">
+            <a href="index.html" style="text-decoration: none;">
+                <div style="font-size: 2.4rem; font-weight: 800; color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-notes-medical" style="color: #38bdf8;"></i> NurSync Sign Up
+                </div>
+            </a>
+            <h1 data-i18n="hero_welcome">Welcome to NurSync</h1>
+            <p data-i18n="brand_signup_desc">Create your coordinator account to manage cluster activities and resources efficiently across Alahsa.</p>
+        </div>
+    </div>
+
+    <!-- Right Signup Form -->
+    <div class="login-right">
+        <div class="login-card" style="max-width: 500px; padding: 35px;">
+            <!-- Top Language Switcher Bar -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px;">
+                <button onclick="toggleLanguage()" class="lang-toggle-btn" title="Toggle Language">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="lang-btn-text">العربية</span>
+                </button>
+            </div>
+            
+            <h2 data-i18n="signup_title">Coordinator Registration</h2>
+            <p class="subtitle" data-i18n="signup_subtitle">Create your Hospital Coordinator account</p>
+
+            <div class="form-group">
+                <label data-i18n="signup_name">Full Name</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" id="reg-name" placeholder="John William Doe" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label data-i18n="signup_email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="reg-email" placeholder="name@example.com" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="signup_phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="reg-phone" placeholder="05XXXXXXXX" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="signup_hospital">Assigned Hospital</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-hospital"></i>
+                    <select id="reg-hospital" style="width: 100%; padding: 12px 14px 12px 42px; border: 1.5px solid var(--border-light); border-radius: 12px; font-family: inherit; font-size: 14px; color: var(--text-dark); background: white; cursor: pointer; outline: none; transition: all 0.2s ease;">
+                        <option value="" data-i18n="signup_hospital">-- Select Your Hospital --</option>
+                        <option value="ahc" data-i18n="filter_hospital_ahc">Health Cluster (AHC)</option>
+                        <option value="phc" data-i18n="filter_hospital_phc">Primary Health Center (PHC)</option>
+                        <option value="kfgh" data-i18n="filter_hospital_kfgh">King Faisal Gen. (KFGH)</option>
+                        <option value="kfhh" data-i18n="filter_hospital_kfhh">King Fahad (KFHH)</option>
+                        <option value="pscc" data-i18n="filter_hospital_pscc">Prince Sultan Cardiac (PSCC)</option>
+                        <option value="psbj" data-i18n="filter_hospital_psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                        <option value="mch" data-i18n="filter_hospital_mch">Maternity & Children (MCH)</option>
+                        <option value="mhh" data-i18n="filter_hospital_mhh">Mental Health (MHH)</option>
+                        <option value="oyun" data-i18n="filter_hospital_oyun">Oyun Hospital</option>
+                        <option value="jgh" data-i18n="filter_hospital_jgh">Aljafar General (JGH)</option>
+                        <option value="ogh" data-i18n="filter_hospital_ogh">Alomran General (OGH)</option>
+                        <option value="alafaleq" data-i18n="filter_hospital_alafaleq">Alafaleq Hospital</option>
+                        <option value="bhdc" data-i18n="filter_hospital_bhdc">Blood Hereditary Center (BHDC)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label data-i18n="signup_password">Create Password</label>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px; margin-top: -2px;" data-i18n="signup_pw_rules">Password must be at least 8 characters long and contain both letters and numbers.</div>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="reg-password" placeholder="Enter secure password" autocomplete="new-password">
+                    <button class="toggle-password" onclick="togglePassSignup()" type="button">
+                        <i class="fa-regular fa-eye" id="signup-eye-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn-login-submit" onclick="performSignup()" id="signup-btn" style="margin-top: 25px;">
+                <i class="fa-solid fa-user-plus"></i> <span data-i18n="signup_btn">Create Account</span>
+            </button>
+
+            <div style="text-align: center; margin-top: 24px;">
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+                    <span data-i18n="signup_have_account">Already have an account?</span> <a href="login.html" style="color: var(--secondary-blue); font-weight: 600; text-decoration: none;" data-i18n="signup_login_here">Sign In</a>
+                </p>
+                <a href="index.html" style="color: var(--secondary-blue); text-decoration: none; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: color 0.2s ease;" onmouseover="this.style.color='var(--primary-blue-hover)'" onmouseout="this.style.color='var(--secondary-blue)'">
+                    <i class="fa-solid fa-arrow-left-long"></i> <span data-i18n="btn_back_home">Back to Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Academic Demo Project Disclaimer -->
+            <div style="text-align: center; margin-top: 22px; padding-top: 14px; border-top: 1px dashed #cbd5e1;">
+                <p style="font-size: 12.5px; color: #64748b; margin: 0; font-weight: 500;">
+                    <i class="fa-solid fa-graduation-cap" style="color: var(--primary-blue); margin-right: 4px;"></i>
+                    نظام تجريبي داخلي — Academic Demo Project
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="lang.js"></script>
+
+    <script>
+        function togglePassSignup() {
+            const input = document.getElementById('reg-password');
+            const icon  = document.getElementById('signup-eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+        // Prevent browser from autofilling inputs with saved logins
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('reg-name').value = '';
+                document.getElementById('reg-email').value = '';
+                document.getElementById('reg-phone').value = '';
+                document.getElementById('reg-password').value = '';
+            }, 100);
+        });
+
+        async function performSignup() {
+            const name       = document.getElementById('reg-name').value.trim();
+            const email      = document.getElementById('reg-email').value.trim();
+            const phone      = document.getElementById('reg-phone').value.trim();
+            const hospitalId = document.getElementById('reg-hospital').value;
+            const password   = document.getElementById('reg-password').value;
+            const btn        = document.getElementById('signup-btn');
+
+            if (!name || !email || !password || !phone || !hospitalId) {
+                alert('Please fill all required fields.');
+                return;
+            }
+
+            const nameParts = name.split(/\s+/).filter(p => p.length > 0);
+            if (nameParts.length < 3) {
+                alert('Please enter your full triple name (الاسم الثلاثي - على الأقل 3 مقاطع).');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering...';
+
+            try {
+                const res  = await fetch('api/auth.php?action=register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        full_name: name,
+                        email: email,
+                        password: password,
+                        hospital_id: hospitalId,
+                        phone: phone,
+                        role_id: 3 // Force role_id to 3 (Hospital Coordinator / headnurse)
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('Registration successful! You can now log in.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert(data.message || 'Registration failed.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred during registration.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+            }
+        }
+
+        // Allow pressing Enter to submit
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter') performSignup();
+        });
+    </script>
+</body>
+</html>

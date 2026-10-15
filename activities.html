@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Activities - NurSync | Alahsa Health Cluster</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Browse, register, and manage upcoming nursing activities and workshops at Alahsa Health Cluster through the NurSync portal.">
+    <meta name="keywords" content="Nursing activities, Health events, NurSync activities, Alahsa Health, Healthcare workshops">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="All Activities - NurSync">
+    <meta property="og:description" content="Explore and join nursing events at Alahsa Health Cluster.">
+    <meta property="og:image" content="https://nursync.42web.io/assets/alahsa_logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    </head>
+<body class="dashboard-body">
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-overlay" class="mobile-overlay" onclick="window.closeMobileMenu()"></div>
+    <div id="mobile-drawer" class="mobile-drawer">
+        <div class="mobile-drawer-header">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="assets/alahsa_logo.png" alt="Logo" style="height:44px;">
+                </a>
+            </div>
+            <button class="mobile-drawer-close" onclick="window.closeMobileMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="activities.html" class="active" data-i18n="nav_activities">Activities</a>
+            <a href="bulletin.html" data-i18n="nav_bulletin">Bulletin</a>
+            <a href="manage_attendees.html" class="nav-mgmt-link" style="display:none;" data-i18n="nav_manage_attendees">Management</a>
+            <a href="approvals.html" class="nav-approvals-link" style="display:none;" data-i18n="nav_approvals">Approvals</a>
+        </nav>
+        <div class="mobile-drawer-footer">
+            <button onclick="toggleLanguage()" class="lang-toggle-btn mobile-drawer-lang-btn">
+                <i class="fa-solid fa-globe"></i>
+                <span class="lang-btn-text">العربية</span>
+            </button>
+            <button onclick="logout()" class="btn-logout" style="width:100%; display:flex !important; justify-content:center; background:rgba(231,76,60,0.2) !important;">
+                <i class="fa-solid fa-right-from-bracket" style="margin-right:10px;"></i> <span data-i18n="nav_logout">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center;">
+                <img src="assets/alahsa_logo.png" alt="Alahsa Health Cluster Logo" class="cluster-logo">
+            </a>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Home</a>
+            <a href="activities.html" class="active" data-i18n="nav_activities">Activities</a>
+            <a href="bulletin.html" data-i18n="nav_bulletin">Bulletin</a>
+            <a href="manage_attendees.html" class="nav-mgmt-link" style="display:none;" data-i18n="nav_manage_attendees">Management</a>
+            <a href="approvals.html" class="nav-approvals-link" style="display:none;" data-i18n="nav_approvals">Approvals</a>
+        </nav>
+        
+        <div class="user-actions">
+            <button onclick="toggleLanguage()" class="lang-toggle-btn" title="Toggle Language">
+                <i class="fa-solid fa-globe"></i>
+                <span class="lang-btn-text">العربية</span>
+            </button>
+            <!-- Shown when NOT logged in -->
+            <div id="nav-loggedout">
+                <a href="login.html" class="btn-login" data-i18n="nav_login">Login</a>
+            </div>
+            <!-- Shown when logged in -->
+            <div id="nav-loggedin" style="display:none;">
+                <a href="profile.html" class="nav-profile-btn" title="View Profile">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </a>
+                <div class="divider"></div>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="nav_logout">Logout</span>
+                </button>
+            </div>
+            <button class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Header -->
+    <header class="page-hero">
+        <div class="container">
+            <div class="page-title-row">
+                <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="nav_home">Dashboard</span></a>
+                <h1><i class="fa-solid fa-calendar-check"></i> <span data-i18n="page_activities_title">All Cluster Activities</span></h1>
+                <p data-i18n="page_activities_subtitle">Browse upcoming activities across the cluster</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <div class="container">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label><i class="fa-solid fa-filter"></i> <span data-i18n="filter_by_label">Filter by:</span></label>
+                <select id="acts-hospital-filter" class="filter-select">
+                    <option value="all" data-i18n="filter_hospital_all">All Hospitals</option>
+                    <option value="ahc" data-i18n="filter_hospital_ahc">Health Cluster (AHC)</option>
+                    <option value="phc" data-i18n="filter_hospital_phc">Primary Health Center (PHC)</option>
+                    <option value="kfgh" data-i18n="filter_hospital_kfgh">King Faisal Gen. (KFGH)</option>
+                    <option value="kfhh" data-i18n="filter_hospital_kfhh">King Fahad (KFHH)</option>
+                    <option value="pscc" data-i18n="filter_hospital_pscc">Prince Sultan Cardiac (PSCC)</option>
+                    <option value="psbj" data-i18n="filter_hospital_psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                    <option value="mch" data-i18n="filter_hospital_mch">Maternity &amp; Children (MCH)</option>
+                    <option value="mhh" data-i18n="filter_hospital_mhh">Mental Health (MHH)</option>
+                    <option value="oyun" data-i18n="filter_hospital_oyun">Oyun Hospital</option>
+                    <option value="jgh" data-i18n="filter_hospital_jgh">Aljafar General (JGH)</option>
+                    <option value="ogh" data-i18n="filter_hospital_ogh">Alomran General (OGH)</option>
+                    <option value="alafaleq" data-i18n="filter_hospital_alafaleq">Alafaleq Hospital</option>
+                    <option value="bhdc" data-i18n="filter_hospital_bhdc">Blood Hereditary Center (BHDC)</option>
+                </select>
+                <select id="acts-month-filter" class="filter-select">
+                    <option value="all" data-i18n="filter_all_months">All Months</option>
+                </select>
+            </div>
+            <!-- Add Activity Button (Relocated) -->
+            <button class="btn btn-success" id="add-activity-btn" onclick="openAddActivityModal()">
+                <i class="fa-solid fa-plus"></i> <span data-i18n="btn_add_activity">Add Activity</span>
+            </button>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-pill" id="stat-upcoming">
+                <div class="stat-pill-icon upcoming-icon">
+                    <i class="fa-solid fa-calendar-day"></i>
+                </div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-value" id="stat-val-upcoming">0</span>
+                    <span class="stat-pill-label" data-i18n="stat_upcoming">Upcoming</span>
+                </div>
+            </div>
+            <div class="stat-pill" id="stat-today">
+                <div class="stat-pill-icon today-icon">
+                    <i class="fa-solid fa-fire-flame-curved"></i>
+                </div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-value" id="stat-val-today">0</span>
+                    <span class="stat-pill-label" data-i18n="stat_today">Today</span>
+                </div>
+            </div>
+            <div class="stat-pill" id="stat-finished">
+                <div class="stat-pill-icon finished-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-value" id="stat-val-finished">0</span>
+                    <span class="stat-pill-label" data-i18n="stat_completed">Completed</span>
+                </div>
+            </div>
+            <div class="stat-pill" id="stat-hospitals">
+                <div class="stat-pill-icon hospitals-icon">
+                    <i class="fa-solid fa-hospital"></i>
+                </div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-value" id="stat-val-hospitals">0</span>
+                    <span class="stat-pill-label" data-i18n="stat_hospitals">Hospitals</span>
+                </div>
+            </div>
+            <div class="stat-pill" id="stat-joined" style="display:none;">
+                <div class="stat-pill-icon joined-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-value" id="stat-val-joined">0</span>
+                    <span class="stat-pill-label" data-i18n="stat_registered">Joined</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Cards -->
+        <div class="card-grid" id="acts-grid">
+            <!-- Populated by JS -->
+        </div>
+
+    </div>
+
+    <!-- Join Activity Registration Modal -->
+    <div id="join-activity-modal" class="modal-overlay">
+        <div class="modal-content aa-modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-paper-plane"></i> Request to Join</h3>
+                <button onclick="closeJoinModal()" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-form-body">
+                <p class="modal-subtitle" style="margin-bottom: 20px;">Please provide your information to request registration for this activity.</p>
+                <input type="hidden" id="join-act-id">
+                
+                <div class="form-group">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input type="text" id="join-name" placeholder="e.g. John William Doe">
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="join-phone" placeholder="e.g. 05XXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address <span class="required">*</span></label>
+                    <input type="email" id="join-email" placeholder="name@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Hospital <span class="required">*</span></label>
+                    <select id="join-hospital" class="filter-select">
+                        <option value="">-- Select Hospital --</option>
+                        <option value="ahc">Health Cluster (AHC)</option>
+                        <option value="phc">Primary Health Center (PHC)</option>
+                        <option value="kfgh">King Faisal Gen. (KFGH)</option>
+                        <option value="kfhh">King Fahad (KFHH)</option>
+                        <option value="pscc">Prince Sultan Cardiac (PSCC)</option>
+                        <option value="psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                        <option value="mch">Maternity & Children (MCH)</option>
+                        <option value="mhh">Mental Health (MHH)</option>
+                        <option value="oyun">Oyun Hospital</option>
+                        <option value="jgh">Aljafar General</option>
+                        <option value="ogh">Alomran General</option>
+                        <option value="alafaleq">Alafaleq Hospital</option>
+                        <option value="bhdc">Blood Hereditary Center</option>
+                        <option value="ent">Aljabr Eye & ENT</option>
+                    </select>
+                </div>
+                <div style="font-size: 12px; color: var(--text-dark); margin-bottom: 20px; display: flex; gap: 8px; align-items: flex-start; background: #e8f4fd; padding: 12px; border-radius: 8px; border: 1px solid #d0e7ff; line-height: 1.4;">
+                    <i class="fa-solid fa-circle-info" style="color: var(--secondary-blue); margin-top: 2px;"></i>
+                    <span><strong>Note:</strong> After submitting your request, please wait for an email confirming your approval before attending the activity.</span>
+                </div>
+
+                <div class="form-actions" style="margin-top: 25px;">
+                    <button onclick="closeJoinModal()" class="btn btn-cancel">Cancel</button>
+                    <button id="join-submit-btn" onclick="submitJoinRequest()" class="btn btn-submit-activity" style="background-color: var(--primary-blue); color: white;">
+                        <i class="fa-solid fa-paper-plane"></i> Confirm Request
+                    </button>
+                </div>
+                <div id="join-toast" class="modal-toast"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Poster Modal (reused from main) -->
+    <div id="poster-modal" class="modal-overlay">
+        <div class="poster-display-frame" style="background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 !important;">
+            <button class="modal-close-btn" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            <img src="assets/event_poster.png" alt="Event Poster" class="modal-poster" id="modal-poster-img">
+        </div>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div id="add-activity-modal" class="modal-overlay">
+        <div class="modal-content aa-modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus"></i> <span data-i18n="modal_add_act_title">Add New Activity</span></h3>
+                <button onclick="closeAddActivityModal()" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-form-body">
+                <input type="hidden" id="aa-id" value="">
+                
+                <!-- Section 1: Basic Info -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span data-i18n="modal_core_info">Core Information</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-heading"></i> <span data-i18n="modal_act_title">Activity Title</span></label>
+                            <input type="text" id="aa-title" placeholder="e.g. Advanced Cardiac Life Support" data-i18n-ph="modal_title_ph">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-hospital"></i> <span data-i18n="modal_act_hosp">Hospital</span></label>
+                            <select id="aa-hospital" class="filter-select">
+                                <option value="" data-i18n="modal_act_hosp">-- Select Hospital --</option>
+                                <option value="ahc" data-i18n="filter_hospital_ahc">Health Cluster (AHC)</option>
+                                <option value="phc" data-i18n="filter_hospital_phc">Primary Health Center (PHC)</option>
+                                <option value="kfgh" data-i18n="filter_hospital_kfgh">King Faisal Gen. (KFGH)</option>
+                                <option value="kfhh" data-i18n="filter_hospital_kfhh">King Fahad (KFHH)</option>
+                                <option value="pscc" data-i18n="filter_hospital_pscc">Prince Sultan Cardiac (PSCC)</option>
+                                <option value="psbj" data-i18n="filter_hospital_psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                                <option value="mch" data-i18n="filter_hospital_mch">Maternity & Children (MCH)</option>
+                                <option value="mhh" data-i18n="filter_hospital_mhh">Mental Health (MHH)</option>
+                                <option value="oyun" data-i18n="filter_hospital_oyun">Oyun Hospital</option>
+                                <option value="jgh" data-i18n="filter_hospital_jgh">Aljafar General (JGH)</option>
+                                <option value="ogh" data-i18n="filter_hospital_ogh">Alomran General (OGH)</option>
+                                <option value="alafaleq" data-i18n="filter_hospital_alafaleq">Alafaleq Hospital</option>
+                                <option value="bhdc" data-i18n="filter_hospital_bhdc">Blood Hereditary Center (BHDC)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Scheduling -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <i class="fa-solid fa-clock"></i>
+                        <span data-i18n="modal_scheduling">Scheduling</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-calendar-day"></i> <span data-i18n="modal_act_date">Activity Date</span></label>
+                            <input type="text" id="aa-date" placeholder="Select Date" data-i18n-ph="modal_date_ph" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-regular fa-clock"></i> <span data-i18n="modal_act_time">Start Time</span></label>
+                            <input type="text" id="aa-time" placeholder="Select Time" data-i18n-ph="modal_time_ph" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Media & Content -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <i class="fa-solid fa-photo-film"></i>
+                        <span data-i18n="modal_content_media">Content & Media</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-image"></i> <span data-i18n="modal_poster_label">Event Poster (Optional JPG/PNG)</span></label>
+                        <div class="modern-uploader">
+                            <input type="file" id="aa-poster" accept="image/png, image/jpeg, image/jpg, image/webp" style="display:none;" onchange="document.getElementById('aa-poster-name').innerText = this.files.length ? this.files[0].name : (typeof getCurrentLang === 'function' && getCurrentLang() === 'ar' ? 'لم يتم اختيار ملف' : 'No file chosen')">
+                            <label for="aa-poster" class="uploader-trigger">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="modal_choose_img">Choose Image</span>
+                            </label>
+                            <div id="aa-poster-name" class="uploader-filename" data-i18n="modal_no_file">No file chosen</div>
+                            <button type="button" id="btn-remove-poster" class="uploader-remove" onclick="removeActivityPoster()" style="display:none;" title="Remove existing poster">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fa-solid fa-file-pdf"></i> <span data-i18n="modal_slides_label">Presentation Slides (Optional PDF/PPTX)</span></label>
+                        <div class="modern-uploader">
+                            <input type="file" id="aa-slide" accept=".pdf,.ppt,.pptx,.doc,.docx" style="display:none;" onchange="document.getElementById('aa-slide-name').innerText = this.files.length ? this.files[0].name : (typeof getCurrentLang === 'function' && getCurrentLang() === 'ar' ? 'لم يتم اختيار ملف' : 'No file chosen')">
+                            <label for="aa-slide" class="uploader-trigger">
+                                <i class="fa-solid fa-file-arrow-up"></i> <span data-i18n="modal_choose_file">Choose File</span>
+                            </label>
+                            <div id="aa-slide-name" class="uploader-filename" data-i18n="modal_no_file">No file chosen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 25px;">
+                    <button onclick="closeAddActivityModal()" class="btn btn-cancel" data-i18n="modal_cancel">Cancel</button>
+                    <button id="aa-submit-btn" onclick="submitActivity()" class="btn btn-submit-activity">
+                        <i class="fa-solid fa-save"></i> <span data-i18n="modal_save">Save Activity</span>
+                    </button>
+                </div>
+                <div id="aa-toast" class="modal-toast"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (() => {
+        const hospitalNames = {
+            ahc:      'Health Cluster',
+            phc:      'Primary Health Center',
+            kfgh:     'King Faisal Gen.',
+            kfhh:     'King Fahad',
+            pscc:     'Prince Sultan Cardiac',
+            psbj:     'Prince Saud Bin Jalawy',
+            mch:      'Maternity & Children',
+            mhh:      'Mental Health',
+            oyun:     'Oyun Hospital',
+            jgh:      'Aljafar General',
+            ogh:      'Alomran General',
+            alafaleq: 'Alafaleq Hospital',
+            bhdc:     'Blood Hereditary Center',
+            ent:      'Aljabr Eye & ENT'
+        };
+
+        const hospitalColors = {
+            ahc:      '#185289',
+            phc:      '#16a085',
+            kfgh: '#4753a2', kfhh: '#5a8e63', pscc: '#e74c3c',
+            psbj: '#1abc9c', mch:  '#e84393', mhh:  '#8e44ad',
+            oyun: '#d35400', jgh:  '#2c3e50', ogh:  '#8d6e63',
+            alafaleq: '#f39c12', bhdc: '#c0392b', ent: '#3498db'
+        };
+
+        // Will be populated from the database
+        let allEvents = [];
+
+        window.getJoined = function() { return JSON.parse(localStorage.getItem('nursync_joined') || '{}'); };
+        window.setJoined = function(obj) { localStorage.setItem('nursync_joined', JSON.stringify(obj)); };
+
+        function daysFromNow(dateStr) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const d = new Date(dateStr);
+            return Math.round((d - today) / 86400000);
+        }
+
+        function daysBadgeHTML(days) {
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+            if (days < 0) return `<span class="days-badge finished"><i class="fa-solid fa-check-circle"></i> <bdi>${isAr ? 'منتهية' : 'Finished'}</bdi></span>`;
+            if (days === 0) return `<span class="days-badge today"><i class="fa-solid fa-fire-flame-curved"></i> <bdi>${isAr ? 'اليوم' : 'Today!'}</bdi></span>`;
+            if (days <= 3) return `<span class="days-badge soon"><i class="fa-solid fa-hourglass-half"></i> <bdi>${isAr ? `خلال ${days} أيام` : `In ${days} day${days>1?'s':''}`}</bdi></span>`;
+            return `<span class="days-badge"><i class="fa-regular fa-clock"></i> <bdi>${isAr ? `خلال ${days} يوم` : `In ${days} days`}</bdi></span>`;
+        }
+
+        window.toggleJoin = async function(activityId, title) {
+            const joined = getJoined();
+            const isJoined = !!joined[activityId];
+
+            if (isJoined) {
+                // If already joined, just leave
+                try {
+                    const res = await fetch(`api/registrations.php?action=leave`, {
+                        method: 'DELETE',
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({ activity_id: activityId })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        delete joined[activityId];
+                        setJoined(joined);
+                        renderCards();
+                    } else {
+                        alert(data.message || 'Failed to leave activity.');
+                    }
+                } catch {
+                    alert('Network error.');
+                }
+                return;
+            }
+
+            // Not joined, open the registration form
+            openJoinModal(activityId, title);
+        }
+
+
+
+        window.openJoinModal = function(activityId, title) {
+            const m = document.getElementById('join-activity-modal');
+            document.getElementById('join-act-id').value = activityId;
+            document.getElementById('join-toast').style.display = 'none';
+
+            // Pre-fill if logged in
+            const isLoggedIn = localStorage.getItem('nursync_loggedin') === 'true';
+            if (isLoggedIn) {
+                const user = JSON.parse(localStorage.getItem('nursync_user') || '{}');
+                document.getElementById('join-name').value     = user.full_name     || '';
+                document.getElementById('join-email').value    = user.email         || '';
+                document.getElementById('join-phone').value    = user.phone         || '';
+                document.getElementById('join-hospital').value = user.hospital_id    || '';
+            } else {
+                // Clear fields if guest
+                ['join-name','join-email','join-phone','join-hospital'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+            }
+
+            // If we added a select, we may need to trigger change for custom-select-triggers
+            const hospSelect = document.getElementById('join-hospital');
+            hospSelect.dispatchEvent(new Event('change'));
+
+            m.classList.add('active');
+        };
+
+        window.closeJoinModal = function() {
+            document.getElementById('join-activity-modal').classList.remove('active');
+        };
+
+        window.submitJoinRequest = async function() {
+            const name = document.getElementById('join-name').value.trim();
+            const email = document.getElementById('join-email').value.trim();
+            const phone = document.getElementById('join-phone').value.trim();
+            const hosp = document.getElementById('join-hospital').value.trim();
+            const toast = document.getElementById('join-toast');
+            const activityId = document.getElementById('join-act-id').value;
+
+            if (!name || !email || !phone) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Please fill all required fields (*).';
+                toast.style.display = 'block';
+                return;
+            }
+
+            const nameParts = name.split(/\s+/).filter(p => p.length > 0);
+            if (nameParts.length < 3) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Please enter your full triple name (الاسم الثلاثي).';
+                toast.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('join-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                const res = await fetch(`api/registrations.php?action=join`, {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({
+                        activity_id: activityId,
+                        guest_name: name,
+                        guest_email: email,
+                        phone: phone,
+                        guest_hospital: hosp
+                    })
+                });
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    toast.style.color = '#e74c3c';
+                    toast.innerText = 'Server Error: ' + text.substring(0, 50) + '...';
+                    console.error('Server response:', text);
+                    toast.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirm Request';
+                    return;
+                }
+
+                if (data.success || data.message === 'Already registered.') {
+                    const joined = getJoined();
+                    joined[activityId] = true;
+                    setJoined(joined);
+                    
+                    toast.style.color = '#27ae60';
+                    toast.innerText = 'Request submitted successfully!';
+                    toast.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        closeJoinModal();
+                        renderCards();
+                    }, 1200);
+                } else {
+                    toast.style.color = '#e74c3c';
+                    toast.innerText = data.message || 'Failed to submit request.';
+                    toast.style.display = 'block';
+                }
+            } catch (err) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'JS Error: ' + err.message;
+                toast.style.display = 'block';
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirm Request';
+        };
+
+        function formatTimeStr(timeStr) {
+            if (!timeStr) return '';
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+            const parts = timeStr.split(':');
+            if (parts.length < 2) return timeStr;
+            let h = parseInt(parts[0], 10);
+            let m = parts[1];
+            let ampm = h >= 12 ? (isAr ? 'م' : 'PM') : (isAr ? 'ص' : 'AM');
+            h = h % 12;
+            h = h ? h : 12;
+            return `${h}:${m} ${ampm}`;
+        }
+
+        function formatDate(dateStr) {
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+            if(dateStr && dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                const y = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const d = parseInt(parts[2], 10);
+                const dt = new Date(y, m, d);
+                if(isNaN(dt.getTime())) return dateStr;
+                return dt.toLocaleDateString(isAr ? 'ar-SA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            }
+            return new Date(dateStr).toLocaleDateString(isAr ? 'ar-SA' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
+        function animateCount(el, target) {
+            const duration = 600;
+            const start = performance.now();
+            const from = parseInt(el.textContent) || 0;
+            function step(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+                el.textContent = Math.round(from + (target - from) * eased);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function updateStats(filtered) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            let upcoming = 0, todayCount = 0, finished = 0;
+            const hospitals = new Set();
+
+            filtered.forEach(ev => {
+                const d = new Date(ev.date); d.setHours(0,0,0,0);
+                const diff = Math.round((d - today) / 86400000);
+                if (diff > 0) upcoming++;
+                else if (diff === 0) todayCount++;
+                else finished++;
+                if (ev.hospital) hospitals.add(ev.hospital);
+            });
+
+            animateCount(document.getElementById('stat-val-upcoming'), upcoming);
+            animateCount(document.getElementById('stat-val-today'), todayCount);
+            animateCount(document.getElementById('stat-val-finished'), finished);
+            animateCount(document.getElementById('stat-val-hospitals'), hospitals.size);
+
+            const todayPill = document.getElementById('stat-today');
+            if (todayCount > 0) {
+                todayPill.classList.add('highlight-pulse');
+            } else {
+                todayPill.classList.remove('highlight-pulse');
+            }
+
+            const isLoggedIn = localStorage.getItem('nursync_loggedin') === 'true';
+            const joinedPill = document.getElementById('stat-joined');
+            if (isLoggedIn) {
+                joinedPill.style.display = 'flex';
+                const joined = getJoined();
+                const joinedCount = filtered.filter(ev => !!joined[ev.id]).length;
+                animateCount(document.getElementById('stat-val-joined'), joinedCount);
+            } else {
+                joinedPill.style.display = 'none';
+            }
+        }
+
+        function renderCards() {
+            const hospFilter  = document.getElementById('acts-hospital-filter').value;
+            const monthFilter = document.getElementById('acts-month-filter').value;
+            const grid   = document.getElementById('acts-grid');
+            const joined = getJoined();
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+
+            const filtered = allEvents.filter(ev => {
+                let monthKey = 'all';
+                if(ev.date && ev.date.includes('-')) {
+                    const parts = ev.date.split('-');
+                    monthKey = `${parseInt(parts[0], 10)}-${parseInt(parts[1], 10)}`;
+                }
+                const hospOk  = hospFilter  === 'all' || ev.hospital === hospFilter;
+                const monthOk = monthFilter === 'all' || monthKey === monthFilter;
+                return hospOk && monthOk;
+            });
+
+            grid.innerHTML = '';
+            updateStats(filtered);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1">
+                        <i class="fa-regular fa-calendar-xmark"></i>
+                        <p>${isAr ? 'لا توجد أنشطة مطابقة للفلاتر المحددة.' : 'No activities found for the selected filters.'}</p>
+                    </div>`;
+                return;
+            }
+
+            const isLoggedIn = localStorage.getItem('nursync_loggedin') === 'true';
+
+            filtered.forEach(ev => {
+                const color = ev.color_hex || hospitalColors[ev.hospital] || '#185289';
+                const name  = ev.hospital_name || hospitalNames[ev.hospital]  || ev.hospital;
+                const days  = daysFromNow(ev.date);
+                const isJoined = !!joined[ev.id];
+                const isFinished = days < 0;
+
+                const joinBtnText = isJoined ? (isAr ? 'تم الطلب' : 'Requested') : (isAr ? 'طلب التسجيل' : 'Request to Join');
+                const posterBtnText = isAr ? 'الإعلان' : 'Poster';
+                const noPosterBtnText = isAr ? 'لا يوجد إعلان' : 'No Poster';
+                const slidesBtnText = isAr ? 'العرض' : 'Slides';
+
+                const card  = document.createElement('div');
+                card.className = `activity-card ${ev.hospital}` + (isFinished ? ' finished' : '');
+                card.innerHTML = `
+                    <div class="card-indicator" style="background:${color};"></div>
+                    
+                    <div class="card-header-pills">
+                        <span class="hospital-pill" style="background:${color};">
+                            <i class="fa-solid fa-hospital"></i> ${ev.hospital.toUpperCase()}
+                        </span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            ${daysBadgeHTML(days)}
+                            ${(() => {
+                                if (!isLoggedIn) return '';
+                                const user = JSON.parse(localStorage.getItem('nursync_user') || '{}');
+                                const isSuperAdmin = user.role === 'admin' || user.role === 'manager';
+                                const isHeadNurse = user.role === 'headnurse';
+                                const isThisHospitalSuper = isHeadNurse && user.hospital_id === ev.hospital;
+                                
+                                if (isSuperAdmin || isThisHospitalSuper) {
+                                    return `
+                                    <div class="card-admin-actions">
+                                        <button class="btn-edit-card" onclick="openEditActivityModal(${ev.id})" title="Edit Activity">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <button class="btn-delete-card" onclick="deleteActivity(${ev.id}, '${ev.title.replace(/'/g,"\\'")}')" title="Delete Activity">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>`;
+                                }
+                                return '';
+                            })()}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title"><bdi>${ev.title}</bdi></div>
+                        <div class="meta-group">
+                            <div class="meta-item">
+                                <i class="fa-regular fa-calendar"></i> <bdi>${formatDate(ev.date)}</bdi>
+                            </div>
+                            ${ev.time && ev.time !== '00:00:00' ? `
+                            <div class="meta-item">
+                                <i class="fa-regular fa-clock"></i> <bdi>${formatTimeStr(ev.time)}</bdi>
+                            </div>` : ''}
+                            <div class="meta-item">
+                                <i class="fa-solid fa-location-dot"></i> <bdi>${name}</bdi>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions-unified">
+                        ${!isFinished ? `
+                        <button class="join-btn-premium ${isJoined ? 'joined' : ''}" 
+                                onclick="toggleJoin(${ev.id}, '${ev.title.replace(/'/g,"\\'")}')">
+                            ${isJoined ? '<i class="fa-solid fa-circle-check"></i> ' : '<i class="fa-solid fa-plus"></i> '}<span>${joinBtnText}</span>
+                        </button>
+                        ` : ''}
+                        ${ev.poster_path ? `
+                        <button class="view-poster-btn" data-poster="${ev.poster_path}" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; background-color:var(--bg-light); color:var(--primary-blue); font-weight:600; padding:10px 0; border-radius:6px; text-decoration:none; transition:all 0.2s; border:1px solid var(--border-light);">
+                            <i class="fa-solid fa-image"></i> <span>${posterBtnText}</span>
+                        </button>
+                        ` : `
+                        <button class="view-poster-btn disabled" disabled style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; background-color:#f5f5f5; color:#b5b5b5; font-weight:600; padding:10px 0; border-radius:6px; text-decoration:none; border:1px solid #e0e0e0; cursor:not-allowed;">
+                            <i class="fa-solid fa-eye-slash"></i> <span>${noPosterBtnText}</span>
+                        </button>
+                        `}
+                        ${ev.slide_path ? `
+                        <a href="${ev.slide_path}" target="_blank" class="download-slide-btn" onclick="downloadSlide(${ev.slide_id}); event.stopPropagation();" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; background-color:var(--bg-light); color:var(--primary-blue); font-weight:600; padding:10px 0; border-radius:6px; text-decoration:none; transition:all 0.2s; border:1px solid var(--border-light);">
+                            <i class="fa-solid fa-file-arrow-down"></i> <span>${slidesBtnText}</span>
+                        </a>
+                        ` : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.deleteActivity = async function(id, title) {
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+            const confirmMsg = isAr ? `هل أنت متأكد من حذف النشاط "${title}"؟ لا يمكن التراجع عن هذا الإجراء.` : `Are you sure you want to delete "${title}"? This action cannot be undone.`;
+            if (!confirm(confirmMsg)) return;
+            
+            try {
+                const res = await fetch(`api/activities.php?action=delete&id=${id}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    fetchActivities();
+                } else {
+                    alert(data.message || (isAr ? 'فشل حذف النشاط.' : 'Failed to delete activity.'));
+                }
+            } catch (err) {
+                alert(isAr ? 'خطأ في الاتصال أثناء حذف النشاط.' : 'Network error while deleting activity.');
+            }
+        };
+
+        function populateMonthFilter(events) {
+            const filter = document.getElementById('acts-month-filter');
+            if(!filter) return;
+            const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+            const currentVal = filter.value;
+            const uniqueMonths = {};
+            
+            events.forEach(ev => {
+                if (ev.date && ev.date.includes('-')) {
+                    const parts = ev.date.split('-');
+                    const year = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10);
+                    const key = `${year}-${month}`;
+                    uniqueMonths[key] = { year, month };
+                }
+            });
+
+            const sortedKeys = Object.keys(uniqueMonths).sort((a, b) => {
+                const [yA, mA] = a.split('-').map(Number);
+                const [yB, mB] = b.split('-').map(Number);
+                return (yA - yB) || (mA - mB);
+            });
+
+            filter.innerHTML = `<option value="all">${isAr ? 'جميع الأشهر' : 'All Months'}</option>`;
+            sortedKeys.forEach(key => {
+                const { year, month } = uniqueMonths[key];
+                const dt = new Date(year, month - 1, 1);
+                const monthText = dt.toLocaleString(isAr ? 'ar-SA' : 'en-US', { month: 'long', year: 'numeric' });
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = monthText;
+                filter.appendChild(option);
+            });
+
+            if (Array.from(filter.options).some(opt => opt.value === currentVal)) {
+                filter.value = currentVal;
+            }
+        }
+
+        async function fetchActivities() {
+            const grid = document.getElementById('acts-grid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
+            
+            try {
+                const res = await fetch('api/activities.php?action=all');
+                const data = await res.json();
+                if (data.success && data.data) {
+                    allEvents = data.data.map(a => ({
+                        id: a.id,
+                        date: a.activity_date,
+                        time: a.start_time,
+                        desc: a.description,
+                        title: a.title,
+                        hospital: a.hospital_id,
+                        hospital_name: a.hospital_name,
+                        color_hex: a.color_hex,
+                        slide_id: a.slide_id,
+                        slide_path: a.slide_path,
+                        poster_path: a.poster_path
+                    }));
+                    window.allEvents = allEvents;
+                    populateMonthFilter(allEvents);
+                }
+            } catch (err) {
+                console.error("Failed to load activities", err);
+            }
+            renderCards();
+        }
+
+        document.getElementById('acts-hospital-filter').addEventListener('change', renderCards);
+        document.getElementById('acts-month-filter').addEventListener('change', renderCards);
+        window.addEventListener('languageChanged', () => {
+            if (window.allEvents) populateMonthFilter(window.allEvents);
+            renderCards();
+        });
+
+        fetchActivities();
+
+        // Modal
+        const modal    = document.getElementById('poster-modal');
+        const closeBtn = document.getElementById('modal-close');
+        const modalImg = document.getElementById('modal-poster-img');
+
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.view-poster-btn');
+            if (btn && !btn.classList.contains('disabled')) {
+                modalImg.src = btn.getAttribute('data-poster');
+                modal.classList.add('active');
+            }
+        });
+
+        const closeModal = () => modal.classList.remove('active');
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        
+        // Expose to window so our external modal can call it
+        window.fetchActivities = fetchActivities;
+    })();
+
+    // --- External Modal Logic ---
+    let fpDate, fpTime;
+    document.addEventListener('DOMContentLoaded', () => {
+        const fixPicker = (s, d, instance) => {
+            // Only lock scroll if the picker is open (not on ready)
+            if (instance && instance.isOpen) {
+                document.body.classList.add('no-scroll');
+                document.querySelectorAll('.modal-form-body, .modal-overlay').forEach(el => {
+                    el.classList.add('no-scroll');
+                });
+            }
+
+            const container = instance ? instance.calendarContainer : null;
+            if (container) {
+                container.style.zIndex = "6000";
+                container.setAttribute('lang', 'en');
+                container.setAttribute('dir', 'ltr');
+                
+                // Target time inputs
+                container.querySelectorAll('.flatpickr-time input').forEach(input => {
+                    input.type = "text"; 
+                    input.setAttribute('inputmode', 'numeric');
+                });
+
+                // Target year input
+                const yearInput = container.querySelector('.cur-year');
+                if (yearInput) {
+                    yearInput.setAttribute('lang', 'en');
+                    yearInput.setAttribute('dir', 'ltr');
+                    yearInput.type = "text";
+                    yearInput.setAttribute('inputmode', 'numeric');
+                }
+
+                // Target AM/PM toggle
+                const amPm = container.querySelector('.flatpickr-am-pm');
+                if (amPm) {
+                    amPm.setAttribute('lang', 'en');
+                    amPm.setAttribute('dir', 'ltr');
+                }
+            }
+        };
+
+        const releaseScroll = () => {
+            document.body.classList.remove('no-scroll');
+            document.querySelectorAll('.modal-form-body, .modal-overlay').forEach(el => {
+                el.classList.remove('no-scroll');
+            });
+        };
+
+        window.fpDate = flatpickr("#aa-date", {
+            static: true,
+            disableMobile: true, // Force styled picker on mobile to prevent native RTL layout date garbling
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "F j, Y",
+            minDate: "today",
+            onOpen: fixPicker,
+            onReady: fixPicker,
+            onMonthChange: fixPicker,
+            onYearChange: fixPicker,
+            onClose: releaseScroll
+        });
+        window.fpTime = flatpickr("#aa-time", {
+            static: true,
+            disableMobile: true, // Force styled picker on mobile
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            altInput: true,
+            altFormat: "h:i K",
+            onOpen: fixPicker,
+            onReady: fixPicker,
+            onClose: releaseScroll
+        });
+    });
+
+
+    window.openAddActivityModal = function() {
+        const m = document.getElementById('add-activity-modal');
+        m.querySelector('.modal-header h3').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Add New Activity';
+        document.getElementById('aa-id').value = '';
+        document.getElementById('aa-title').value = '';
+        
+        const hospSelect = document.getElementById('aa-hospital');
+        hospSelect.value = '';
+        hospSelect.disabled = false;
+
+        // Restriction for Head Nurses (Supervisor or Nurse roles)
+        const user = JSON.parse(localStorage.getItem('nursync_user') || '{}');
+        const isHeadNurse = user.role === 'headnurse';
+        
+        if (isHeadNurse && user.hospital_id) {
+            hospSelect.value = user.hospital_id;
+            hospSelect.disabled = true;
+        } else {
+            hospSelect.disabled = false;
+        }
+        
+        // Trigger UI sync for custom select
+        hospSelect.dispatchEvent(new Event('change'));
+
+        try {
+            if (window.fpDate) {
+                window.fpDate.set('minDate', 'today'); // Limit new activities to today or future dates
+                window.fpDate.clear();
+            } else {
+                document.getElementById('aa-date').value = '';
+            }
+        } catch (e) {
+            console.error("Flatpickr date clear error:", e);
+            document.getElementById('aa-date').value = '';
+        }
+        try {
+            if (window.fpTime) {
+                window.fpTime.clear();
+            } else {
+                document.getElementById('aa-time').value = '';
+            }
+        } catch (e) {
+            console.error("Flatpickr time clear error:", e);
+            document.getElementById('aa-time').value = '';
+        }
+
+        document.getElementById('aa-slide').value = '';
+        document.getElementById('aa-poster').value = '';
+        document.getElementById('aa-slide-name').innerText = 'No file chosen';
+        document.getElementById('aa-poster-name').innerText = 'No file chosen';
+        document.getElementById('btn-remove-poster').style.display = 'none';
+        document.getElementById('aa-toast').style.display = 'none';
+        m.classList.add('active');
+    };
+
+    window.openEditActivityModal = function(id) {
+        const ev = window.allEvents ? window.allEvents.find(e => e.id === id) : null;
+        if(!ev) return;
+        const m = document.getElementById('add-activity-modal');
+        m.querySelector('.modal-header h3').innerHTML = '<i class="fa-solid fa-pen"></i> Edit Activity';
+        document.getElementById('aa-id').value = ev.id;
+        document.getElementById('aa-title').value = ev.title;
+        
+        const hospSelect = document.getElementById('aa-hospital');
+        hospSelect.value = ev.hospital;
+        
+        const user = JSON.parse(localStorage.getItem('nursync_user') || '{}');
+        const isHeadNurse = user.role === 'headnurse';
+        hospSelect.disabled = isHeadNurse;
+
+        // Trigger UI sync for custom select
+        hospSelect.dispatchEvent(new Event('change'));
+
+        try {
+            if (window.fpDate) {
+                window.fpDate.set('minDate', null); // Allow displaying/selecting past dates when editing existing activities
+                window.fpDate.setDate(ev.date || '');
+            } else {
+                document.getElementById('aa-date').value = ev.date || '';
+            }
+        } catch (e) {
+            console.error("Flatpickr date set error:", e);
+            document.getElementById('aa-date').value = ev.date || '';
+        }
+        try {
+            if (window.fpTime) {
+                window.fpTime.setDate(ev.time || '');
+            } else {
+                document.getElementById('aa-time').value = ev.time ? ev.time.slice(0, 5) : '';
+            }
+        } catch (e) {
+            console.error("Flatpickr time set error:", e);
+            document.getElementById('aa-time').value = ev.time ? ev.time.slice(0, 5) : '';
+        }
+
+        document.getElementById('aa-slide').value = '';
+        document.getElementById('aa-poster').value = '';
+        document.getElementById('aa-slide-name').innerText = 'No file chosen';
+        document.getElementById('aa-poster-name').innerText = 'No file chosen';
+        document.getElementById('btn-remove-poster').style.display = ev.poster_path ? 'block' : 'none';
+        document.getElementById('aa-toast').style.display = 'none';
+        m.classList.add('active');
+    };
+
+    window.closeAddActivityModal = function() {
+        const m = document.getElementById('add-activity-modal');
+        m.classList.remove('active');
+    };
+
+    window.downloadSlide = async function(slideId) {
+        try {
+            await fetch(`api/slides.php?action=download&id=${slideId}`, { method: 'POST' });
+        } catch (e) {}
+    };
+
+    window.removeActivityPoster = async function() {
+        if (!confirm('Are you sure you want to remove the poster for this activity? This change will be saved immediately.')) return;
+        const id = document.getElementById('aa-id').value;
+        if (!id) return;
+        
+        try {
+            const fd = new FormData();
+            fd.append('activity_id', id);
+            const res = await fetch('api/activities.php?action=delete_poster', { method:'POST', body:fd });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('btn-remove-poster').style.display = 'none';
+                document.getElementById('aa-poster').value = '';
+                if(window.fetchActivities) window.fetchActivities();
+                alert('Poster removed successfully.');
+            } else {
+                alert(data.message || 'Failed to remove poster.');
+            }
+        } catch(e) {
+            alert('Network error while removing poster.');
+        }
+    };
+
+    window.submitActivity = async function() {
+        const id = document.getElementById('aa-id').value;
+        const title = document.getElementById('aa-title').value.trim();
+        const hospital_id = document.getElementById('aa-hospital').value;
+        const date = document.getElementById('aa-date').value;
+        const time = document.getElementById('aa-time').value;
+        const slideFile = document.getElementById('aa-slide').files[0];
+        const toast = document.getElementById('aa-toast');
+
+        if(!title || !hospital_id || !date) {
+            toast.style.color = '#e74c3c';
+            toast.innerText = 'Title, Hospital, and Date are required.';
+            toast.style.display = 'block';
+            return;
+        }
+
+        const btn = document.getElementById('aa-submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+        const formData = new URLSearchParams();
+        if(id) formData.append('id', id);
+        formData.append('title', title);
+        formData.append('hospital_id', hospital_id);
+        formData.append('activity_date', date);
+        if (time) formData.append('start_time', time);
+
+        try {
+            const action = id ? 'update' : 'create';
+            const res = await fetch(`api/activities.php?action=${action}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: formData.toString()
+            });
+            const data = await res.json();
+            if(data.success) {
+                const activityId = data.id || id;
+                
+                // Upload slide if present
+                if (slideFile && activityId) {
+                    toast.style.color = '#f39c12';
+                    toast.innerText = 'Uploading slides...';
+                    
+                    const sData = new FormData();
+                    sData.append('file', slideFile);
+                    sData.append('activity_id', activityId);
+                    sData.append('hospital_id', hospital_id);
+                    sData.append('title', title);
+                    
+                    await fetch('api/slides.php?action=upload', {
+                        method: 'POST',
+                        body: sData
+                    });
+                }
+
+                // Upload poster if present
+                const posterFile = document.getElementById('aa-poster').files[0];
+                if (posterFile && activityId) {
+                    toast.style.color = '#f39c12';
+                    toast.innerText = 'Uploading poster...';
+                    
+                    const pData = new FormData();
+                    pData.append('poster', posterFile);
+                    pData.append('activity_id', activityId);
+                    
+                    await fetch('api/activities.php?action=upload_poster', {
+                        method: 'POST',
+                        body: pData
+                    });
+                }
+                
+                toast.style.color = '#27ae60';
+                toast.innerText = id ? 'Activity updated successfully!' : 'Activity created successfully!';
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    window.closeAddActivityModal();
+                    if(window.fetchActivities) window.fetchActivities();
+                }, 1200);
+            } else {
+                toast.style.color = '#e74c3c';
+                toast.innerText = data.message || 'Failed to create activity.';
+                toast.style.display = 'block';
+            }
+        } catch (err) {
+            toast.style.color = '#e74c3c';
+            toast.innerText = 'Network error occurred.';
+            toast.style.display = 'block';
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-save"></i> Save Activity';
+    };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="lang.js"></script>
+    <script src="auth.js"></script>
+        <!-- Micro Footer -->
+    <div style="text-align: center; padding: 15px; font-size: 13px; color: #4b5563; background: #ffffff; border-top: 1px solid #e5e7eb; position: relative; z-index: 10; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.02);">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <span style="font-weight: 600;">&copy; 2026 NurSync</span>
+            <span style="color: #d1d5db;">|</span>
+            <a href="mailto:health.nursync@gmail.com" style="color: var(--primary-blue); text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-headset"></i> Tech Support</a>
+            <span style="color: #d1d5db;">|</span>
+            <span style="font-family: 'Roboto Mono', monospace; font-weight: 500;">v1.0.2</span>
+        </div>
+    </div>
+</body>
+</html>

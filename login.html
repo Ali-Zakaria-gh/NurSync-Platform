@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - NurSync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+    <!-- Left Branding Panel -->
+    <div class="login-left">
+        <div class="login-left-content">
+            <a href="index.html" style="text-decoration: none;">
+                <div style="font-size: 2.4rem; font-weight: 800; color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-notes-medical" style="color: #38bdf8;"></i> NurSync Login
+                </div>
+            </a>
+            <h1 data-i18n="hero_welcome">Welcome to NurSync</h1>
+            <p data-i18n="brand_login_desc">Connecting nurses with education, learning opportunities, and professional development across Alahsa Health Cluster.</p>
+        </div>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="login-right">
+        <div class="login-card">
+            <!-- Top Language Switcher Bar -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+                <button onclick="toggleLanguage()" class="lang-toggle-btn" title="Toggle Language">
+                    <i class="fa-solid fa-globe"></i>
+                    <span class="lang-btn-text">العربية</span>
+                </button>
+            </div>
+            
+            <h2 data-i18n="login_title">Management Sign In</h2>
+            <p class="subtitle" data-i18n="login_subtitle">For Hospital Coordinators Only</p>
+
+            <div class="form-group">
+                <label for="email" data-i18n="login_email">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" placeholder="name@example.com" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" data-i18n="login_password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter your password">
+                    <button class="toggle-password" onclick="togglePass()" type="button">
+                        <i class="fa-regular fa-eye" id="eye-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-options" style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="remember-me" style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox"> <span data-i18n="login_remember">Remember me</span>
+                </label>
+                <a href="#" class="forgot-link" data-i18n="login_forgot">Forgot password?</a>
+            </div>
+
+            <button class="btn-login-submit" onclick="goHome()">
+                <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="login_btn">Sign In</span>
+            </button>
+
+            <a href="signup.html" class="btn-login-submit" style="background: white !important; color: var(--primary-blue) !important; border: 2px solid var(--primary-blue) !important; margin-top: 12px; text-decoration: none;">
+                <i class="fa-solid fa-user-plus"></i> <span data-i18n="login_coordinator_btn">Coordinator Sign Up</span>
+            </a>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="index.html" style="color: var(--secondary-blue); text-decoration: none; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: color 0.2s ease;" onmouseover="this.style.color='var(--primary-blue-hover)'" onmouseout="this.style.color='var(--secondary-blue)'">
+                    <i class="fa-solid fa-arrow-left-long"></i> <span data-i18n="btn_back_home">Back to Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Academic Demo Project Disclaimer -->
+            <div style="text-align: center; margin-top: 22px; padding-top: 14px; border-top: 1px dashed #cbd5e1;">
+                <p style="font-size: 12.5px; color: #64748b; margin: 0; font-weight: 500;">
+                    <i class="fa-solid fa-graduation-cap" style="color: var(--primary-blue); margin-right: 4px;"></i>
+                    نظام تجريبي داخلي — Academic Demo Project
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="lang.js"></script>
+
+    <script>
+        function togglePass() {
+            const input = document.getElementById('password');
+            const icon  = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        async function goHome() {
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn      = document.querySelector('.btn-login-submit');
+
+            if (!email || !password) {
+                alert('Please enter your email and password.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+            try {
+                const res  = await fetch('api/auth.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('nursync_loggedin', 'true');
+                    localStorage.setItem('nursync_user', JSON.stringify(data.user));
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.message || 'Login failed.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+                }
+            } catch (err) {
+                alert('Network or server error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+            }
+        }
+
+        // Allow pressing Enter to submit
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter') goHome();
+        });
+    </script>
+</body>
+</html>

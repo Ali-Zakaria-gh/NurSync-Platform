@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="zFmUC0dpl5zTPLqlCXLfQk0mncS3thR3nKgAot8od0E" />
+    <title>NurSync - Alahsa Health Cluster | Nursing Activities Hub</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="NurSync is the premium platform for managing nursing education, continuous development, and healthcare events within the Alahsa Health Cluster.">
+    <meta name="keywords" content="NurSync, Alahsa Health, Nursing education, Nursing activities, Health cluster, Nursing events, Continuing education">
+    <meta name="author" content="NurSync Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nursync.42web.io/">
+    <meta property="og:title" content="NurSync - Alahsa Health Cluster">
+    <meta property="og:description" content="The unified hub for nursing education and healthcare events.">
+    <meta property="og:image" content="https://nursync.42web.io/assets/alahsa_logo.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap&text=0123456789:APM" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <style>
+        /* Mobile Calendar Fix (Balanced for Fixed Navbar) */
+        .event-pill {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+            width: 100% !important;
+            max-width: 450px !important; /* Forces the width on Large Screens */
+        }
+        .event-pill::after { display: none !important; }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+                max-width: 100% !important;
+                overflow: hidden !important;
+            }
+
+            .calendar-section {
+                max-width: 100% !important;
+                overflow: hidden !important;
+            }
+
+            .calendar-grid {
+                display: grid !important;
+                grid-template-columns: repeat(7, 1fr) !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+                table-layout: fixed !important;
+            }
+
+            .calendar-grid #calendar-body {
+                display: grid !important;
+                grid-template-columns: repeat(7, 1fr) !important;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+        }
+    </style>
+    </head>
+<body>
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-overlay" class="mobile-overlay" onclick="window.closeMobileMenu()"></div>
+    <div id="mobile-drawer" class="mobile-drawer">
+        <div class="mobile-drawer-header">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="assets/alahsa_logo.png" alt="Logo" style="height:44px;">
+                </a>
+            </div>
+            <button class="mobile-drawer-close" onclick="window.closeMobileMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-links">
+            <a href="index.html" class="active" data-i18n="nav_home">Home</a>
+            <a href="activities.html" data-i18n="nav_activities">Activities</a>
+            <a href="bulletin.html" data-i18n="nav_bulletin">Bulletin</a>
+            <a href="manage_attendees.html" class="nav-mgmt-link" style="display:none;" data-i18n="nav_manage_attendees">Management</a>
+            <a href="approvals.html" class="nav-approvals-link" style="display:none;" data-i18n="nav_approvals">Approvals</a>
+        </nav>
+        <div class="mobile-drawer-footer">
+            <button onclick="toggleLanguage()" class="lang-toggle-btn mobile-drawer-lang-btn">
+                <i class="fa-solid fa-globe"></i>
+                <span class="lang-btn-text">العربية</span>
+            </button>
+            <button onclick="logout()" class="btn-logout" style="width:100%; display:flex !important; justify-content:center; background:rgba(231,76,60,0.2) !important;">
+                <i class="fa-solid fa-right-from-bracket" style="margin-right:10px;"></i> <span data-i18n="nav_logout">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="index.html" style="display: flex; align-items: center;">
+                <img src="assets/alahsa_logo.png" alt="Alahsa Health Cluster Logo" class="cluster-logo">
+            </a>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="index.html" class="active" data-i18n="nav_home">Home</a>
+            <a href="activities.html" data-i18n="nav_activities">Activities</a>
+            <a href="bulletin.html" data-i18n="nav_bulletin">Bulletin</a>
+            <a href="manage_attendees.html" class="nav-mgmt-link" style="display:none;" data-i18n="nav_manage_attendees">Management</a>
+            <a href="approvals.html" class="nav-approvals-link" style="display:none;" data-i18n="nav_approvals">Approvals</a>
+        </nav>
+        
+        <div class="user-actions">
+            <button onclick="toggleLanguage()" class="lang-toggle-btn" title="Toggle Language">
+                <i class="fa-solid fa-globe"></i>
+                <span class="lang-btn-text">العربية</span>
+            </button>
+            <div id="nav-loggedout">
+                <a href="login.html" class="btn-login" data-i18n="nav_login">Login</a>
+            </div>
+            <div id="nav-loggedin" style="display: none;">
+                <a href="profile.html" class="nav-profile-btn" title="Profile">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </a>
+                <div class="divider"></div>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="nav_logout">Logout</span>
+                </button>
+            </div>
+            <button class="mobile-menu-toggle" onclick="window.toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2 data-i18n="hero_welcome">Welcome to NurSync</h2>
+            <a href="activities.html" class="btn btn-success btn-join-floating" data-i18n="hero_join_btn">Join Activity</a>
+            <p data-i18n="brand_tagline">Your Hub for Nursing Education & Events</p>
+        </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <main class="main-container">
+        
+        <!-- Left Column: Calendar -->
+        <section class="calendar-section">
+            <div class="section-header">
+                <h3 style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <button class="icon-btn nav-arrow" id="prev-month-btn" aria-label="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span data-i18n="calendar_title">Activities Calendar</span>
+                    <span class="month-label" id="current-month-label">- May 2024</span>
+                    <button class="icon-btn nav-arrow" id="next-month-btn" aria-label="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="month-picker-container">
+                        <button class="icon-btn calendar-picker-btn" id="month-picker-btn" aria-label="Select Month"><i class="fa-regular fa-calendar-days"></i></button>
+                        <div class="custom-month-picker" id="custom-month-picker">
+                            <div class="cmp-header">
+                                <button class="cmp-nav-btn" id="cmp-prev-year"><i class="fa-solid fa-chevron-left"></i></button>
+                                <span class="cmp-year" id="cmp-year-label">2026</span>
+                                <button class="cmp-nav-btn" id="cmp-next-year"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            <div class="cmp-months" id="cmp-months-grid">
+                                <!-- Months generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </h3>
+                <div class="filters">
+                    <select class="filter-select" id="hospital-filter">
+                        <option value="all" data-i18n="filter_hospital_all">All Hospitals</option>
+                        <option value="ahc" data-i18n="filter_hospital_ahc">Health Cluster (AHC)</option>
+                        <option value="phc" data-i18n="filter_hospital_phc">Primary Health Center (PHC)</option>
+                        <option value="kfgh" data-i18n="filter_hospital_kfgh">King Faisal Gen. (KFGH)</option>
+                        <option value="kfhh" data-i18n="filter_hospital_kfhh">King Fahad (KFHH)</option>
+                        <option value="pscc" data-i18n="filter_hospital_pscc">Prince Sultan Cardiac (PSCC)</option>
+                        <option value="psbj" data-i18n="filter_hospital_psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                        <option value="mch" data-i18n="filter_hospital_mch">Maternity & Children (MCH)</option>
+                        <option value="mhh" data-i18n="filter_hospital_mhh">Mental Health (MHH)</option>
+                        <option value="oyun" data-i18n="filter_hospital_oyun">Oyun Hospital</option>
+                        <option value="jgh" data-i18n="filter_hospital_jgh">Aljafar General (JGH)</option>
+                        <option value="ogh" data-i18n="filter_hospital_ogh">Alomran General (OGH)</option>
+                        <option value="alafaleq" data-i18n="filter_hospital_alafaleq">Alafaleq Hospital</option>
+                        <option value="bhdc" data-i18n="filter_hospital_bhdc">Blood Hereditary Center (BHDC)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="calendar-container">
+                <div class="calendar-grid">
+                    <!-- Days of week header -->
+                    <div class="cal-day-header" data-i18n="day_sun">Sun</div>
+                    <div class="cal-day-header" data-i18n="day_mon">Mon</div>
+                    <div class="cal-day-header" data-i18n="day_tue">Tue</div>
+                    <div class="cal-day-header" data-i18n="day_wed">Wed</div>
+                    <div class="cal-day-header" data-i18n="day_thu">Thu</div>
+                    <div class="cal-day-header" data-i18n="day_fri">Fri</div>
+                    <div class="cal-day-header" data-i18n="day_sat">Sat</div>
+                    
+                    <!-- Calendar content generated by JS, hardcoding some for visual matching -->
+                    <div class="cal-row" id="calendar-body">
+                        <!-- Events will be populated via script.js -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hospital Color Legend -->
+            <div class="calendar-legend">
+                <h4 data-i18n="calendar_legend_title">Hospital Key</h4>
+                <div class="legend-items">
+                    <div class="legend-item"><span class="color-dot hosp-ahc"></span> AHC</div>
+                    <div class="legend-item"><span class="color-dot hosp-phc"></span> PHC</div>
+                    <div class="legend-item"><span class="color-dot hosp-kfgh"></span> KFGH</div>
+                    <div class="legend-item"><span class="color-dot hosp-kfhh"></span> KFHH</div>
+                    <div class="legend-item"><span class="color-dot hosp-pscc"></span> PSCC</div>
+                    <div class="legend-item"><span class="color-dot hosp-psbj"></span> PSBJ</div>
+                    <div class="legend-item"><span class="color-dot hosp-mch"></span> MCH</div>
+                    <div class="legend-item"><span class="color-dot hosp-mhh"></span> MHH</div>
+                    <div class="legend-item"><span class="color-dot hosp-oyun"></span> Oyun</div>
+                    <div class="legend-item"><span class="color-dot hosp-jgh"></span> JGH</div>
+                    <div class="legend-item"><span class="color-dot hosp-ogh"></span> OGH</div>
+                    <div class="legend-item"><span class="color-dot hosp-alafaleq"></span> Alafaleq</div>
+                    <div class="legend-item"><span class="color-dot hosp-bhdc"></span> BHDC</div>
+                    <div class="legend-item"><span class="color-dot hosp-ent"></span> ENT</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Resources & Cluster Activities -->
+        <aside class="sidebar">
+            <!-- Upcoming Activities Widget -->
+            <div class="widget">
+                <div class="widget-header gradient-blue">
+                    <h3 data-i18n="upcoming_activities">Upcoming Activities</h3>
+                </div>
+                <div class="widget-body" id="upcoming-sidebar-list" style="padding:15px; display:flex; flex-direction:column; gap:12px;">
+                    <p style="text-align:center; color:#7f8c8d; font-size:14px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading activities...</p>
+                </div>
+                <div class="widget-body" style="border-top: 1px solid #eee; padding:15px;">
+                    <a href="activities.html" class="btn btn-view-all" data-i18n="view_all_activities">
+                        View All Activities <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </aside>
+
+    </main>
+
+    <!-- Event Poster Modal -->
+    <div id="poster-modal" class="modal-overlay">
+        <div class="poster-display-frame" style="background: transparent !important; box-shadow: none !important; border: none !important; padding: 0 !important;">
+            <button class="modal-close-btn" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            <img src="assets/event_poster.png" alt="Event Poster" class="modal-poster" id="modal-poster-img">
+        </div>
+    </div>
+
+    <!-- Add Activity Modal -->
+    <div id="add-activity-modal" class="modal-overlay">
+        <div class="modal-content aa-modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus"></i> <span data-i18n="modal_add_act_title">Add New Activity</span></h3>
+                <button onclick="closeAddActivityModal()" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-form-body">
+                <div class="form-group">
+                    <label data-i18n="modal_act_title">Activity Title</label>
+                    <input type="text" id="aa-title" placeholder="e.g. CPR Training" data-i18n-ph="modal_title_ph">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="modal_act_hosp">Hospital</label>
+                    <select id="aa-hospital">
+                        <option value="" data-i18n="modal_act_hosp">-- Select Hospital --</option>
+                        <option value="ahc" data-i18n="filter_hospital_ahc">Health Cluster (AHC)</option>
+                        <option value="phc" data-i18n="filter_hospital_phc">Primary Health Center (PHC)</option>
+                        <option value="kfgh" data-i18n="filter_hospital_kfgh">King Faisal Gen. (KFGH)</option>
+                        <option value="kfhh" data-i18n="filter_hospital_kfhh">King Fahad (KFHH)</option>
+                        <option value="pscc" data-i18n="filter_hospital_pscc">Prince Sultan Cardiac (PSCC)</option>
+                        <option value="psbj" data-i18n="filter_hospital_psbj">Prince Saud Bin Jalawy (PSBJ)</option>
+                        <option value="mch" data-i18n="filter_hospital_mch">Maternity & Children (MCH)</option>
+                        <option value="mhh" data-i18n="filter_hospital_mhh">Mental Health (MHH)</option>
+                        <option value="oyun" data-i18n="filter_hospital_oyun">Oyun Hospital</option>
+                        <option value="jgh" data-i18n="filter_hospital_jgh">Aljafar General (JGH)</option>
+                        <option value="ogh" data-i18n="filter_hospital_ogh">Alomran General (OGH)</option>
+                        <option value="alafaleq" data-i18n="filter_hospital_alafaleq">Alafaleq Hospital</option>
+                        <option value="bhdc" data-i18n="filter_hospital_bhdc">Blood Hereditary Center (BHDC)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-i18n="modal_act_date">Date</label>
+                        <input type="text" id="aa-date" placeholder="Select Date" data-i18n-ph="modal_date_ph" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="modal_act_time">Start Time</label>
+                        <input type="text" id="aa-time" placeholder="Select Time" data-i18n-ph="modal_time_ph" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="modal_act_desc">Description (Optional)</label>
+                    <textarea id="aa-desc" rows="3"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button onclick="closeAddActivityModal()" class="btn btn-cancel" data-i18n="modal_cancel">Cancel</button>
+                    <button id="aa-submit-btn" onclick="submitActivity()" class="btn btn-submit-activity">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="modal_save">Create Activity</span>
+                    </button>
+                </div>
+                <div id="aa-toast" class="modal-toast"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Activity Modal -->
+    <div id="delete-activity-modal" class="modal-overlay">
+        <div class="modal-content del-modal">
+            <div class="modal-header">
+                <h3 class="text-danger"><i class="fa-solid fa-trash"></i> <span data-i18n="modal_delete_title">Delete Activity</span></h3>
+                <button onclick="closeDeleteActivityModal()" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-form-body">
+                <p class="modal-subtitle" data-i18n="modal_delete_title">Select the activity you want to permanently delete. This action cannot be undone.</p>
+                <div class="form-group">
+                    <select id="del-aa-select">
+                        <option value="" data-i18n="modal_select_delete">Loading activities...</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button onclick="closeDeleteActivityModal()" class="btn btn-cancel" data-i18n="modal_cancel">Cancel</button>
+                    <button id="del-aa-submit-btn" onclick="submitDeleteActivity()" class="btn btn-danger">
+                        <i class="fa-solid fa-trash"></i> <span data-i18n="modal_confirm_delete">Delete</span>
+                    </button>
+                </div>
+                <div id="del-aa-toast" class="modal-toast danger"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functions
+        function openAddActivityModal() {
+            const m = document.getElementById('add-activity-modal');
+            m.classList.add('active');
+        }
+        function closeAddActivityModal() {
+            const m = document.getElementById('add-activity-modal');
+            m.classList.remove('active');
+            document.getElementById('aa-title').value = '';
+            document.getElementById('aa-hospital').value = '';
+            if (window.fpDate) window.fpDate.clear();
+            if (window.fpTime) window.fpTime.clear();
+            document.getElementById('aa-desc').value = '';
+            document.getElementById('aa-toast').style.display = 'none';
+        }
+
+        async function submitActivity() {
+            const title = document.getElementById('aa-title').value.trim();
+            const hospital_id = document.getElementById('aa-hospital').value;
+            const date = document.getElementById('aa-date').value;
+            const time = document.getElementById('aa-time').value;
+            const desc = document.getElementById('aa-desc').value.trim();
+            const toast = document.getElementById('aa-toast');
+
+            if(!title || !hospital_id || !date) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Title, Hospital, and Date are required.';
+                toast.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('aa-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+
+            const formData = new URLSearchParams();
+            formData.append('title', title);
+            formData.append('hospital_id', hospital_id);
+            formData.append('activity_date', date);
+            if (time) formData.append('start_time', time);
+            if (desc) formData.append('description', desc);
+
+            try {
+                const res = await fetch('api/activities.php?action=create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formData.toString()
+                });
+                const data = await res.json();
+                if(data.success) {
+                    toast.style.color = '#27ae60';
+                    toast.innerText = 'Activity created successfully!';
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        closeAddActivityModal();
+                        // Trigger calendar refresh via script.js function if it exists
+                        if (typeof renderCalendar === 'function') {
+                            renderCalendar(document.getElementById('hospital-filter').value);
+                        }
+                    }, 1200);
+                } else {
+                    toast.style.color = '#e74c3c';
+                    toast.innerText = data.message || 'Failed to create activity.';
+                    toast.style.display = 'block';
+                }
+            } catch (err) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Network error occurred.';
+                toast.style.display = 'block';
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-plus"></i> Create Activity';
+        }
+
+
+        async function openDeleteActivityModal() {
+            const m = document.getElementById('delete-activity-modal');
+            m.classList.add('active');
+            
+            const sel = document.getElementById('del-aa-select');
+            sel.innerHTML = '<option value="">Loading activities...</option>';
+            
+            try {
+                const res = await fetch('api/activities.php?action=all');
+                const data = await res.json();
+                if(data.success && data.data) {
+                    sel.innerHTML = '<option value="">-- Select an Activity to Delete --</option>';
+                    data.data.forEach(act => {
+                        sel.innerHTML += `<option value="${act.id}">${act.title} (${act.activity_date}) [${act.hospital_name}]</option>`;
+                    });
+                }
+            } catch(e) {
+                sel.innerHTML = '<option value="">Error loading activities</option>';
+            }
+        }
+        
+        function closeDeleteActivityModal() {
+            const m = document.getElementById('delete-activity-modal');
+            m.classList.remove('active');
+            document.getElementById('del-aa-toast').style.display = 'none';
+        }
+        
+        async function submitDeleteActivity() {
+            const id = document.getElementById('del-aa-select').value;
+            const toast = document.getElementById('del-aa-toast');
+            if(!id) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Please select an activity.';
+                toast.style.display = 'block';
+                return;
+            }
+            if(!confirm('Are you absolutely sure you want to delete this activity?')) return;
+            
+            const btn = document.getElementById('del-aa-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+            
+            try {
+                const formData = new URLSearchParams();
+                formData.append('id', id);
+                const res = await fetch('api/activities.php?action=delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formData.toString()
+                });
+                const data = await res.json();
+                if(data.success) {
+                    toast.style.color = '#27ae60';
+                    toast.innerText = 'Deleted successfully!';
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        closeDeleteActivityModal();
+                        if (typeof renderCalendar === 'function') {
+                            renderCalendar(document.getElementById('hospital-filter').value);
+                        }
+                    }, 1200);
+                } else {
+                    toast.style.color = '#e74c3c';
+                    toast.innerText = data.message || 'Failed to delete activity.';
+                    toast.style.display = 'block';
+                }
+            } catch(e) {
+                toast.style.color = '#e74c3c';
+                toast.innerText = 'Network error.';
+                toast.style.display = 'block';
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-trash"></i> Delete';
+        }
+
+
+
+        async function loadUpcomingSidebar() {
+            try {
+                const res = await fetch('api/activities.php?action=upcoming_widget');
+                const data = await res.json();
+                if (data.success && data.data) {
+                    let up = data.data;
+
+                    const container = document.getElementById('upcoming-sidebar-list');
+                    if (!container) return;
+
+                    if (up.length === 0) {
+                        container.innerHTML = '<p style="text-align:center; color:#7f8c8d; font-size:14px;">No upcoming activities soon.</p>';
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    const isAr = typeof getCurrentLang === 'function' && getCurrentLang() === 'ar';
+                    up.forEach(ev => {
+                        const dateObj = new Date(ev.activity_date);
+                        const month = dateObj.toLocaleString(isAr ? 'ar-SA' : 'en-US', { month: 'short' });
+                        const day = dateObj.getDate();
+                        const color = ev.color_hex || '#185289';
+                        const posterBtnText = isAr ? 'عرض الإعلان' : 'View Poster';
+                        const noPosterBtnText = isAr ? 'لا يوجد إعلان' : 'No Poster';
+
+                        container.innerHTML += `
+                            <div style="display:flex; gap:12px; align-items:center; border:1px solid #eee; border-radius:8px; padding:10px; background:#fafafa; transition:all 0.2s; cursor:pointer;" onclick="window.location.href='activities.html'" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='#eee'">
+                                <div style="min-width:48px; height:48px; border-radius:6px; background:${color}15; border:1px solid ${color}30; display:flex; flex-direction:column; justify-content:center; align-items:center; color:${color}; flex-shrink:0;">
+                                    <span style="font-size:11px; font-weight:700; text-transform:uppercase;">${month}</span>
+                                    <span style="font-size:18px; font-weight:800; line-height:1;">${day}</span>
+                                </div>
+                                <div style="flex:1; min-width:0; overflow:hidden;">
+                                    <h4 style="margin:0 0 4px 0; font-size:14px; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; unicode-bidi:plaintext;"><bdi>${ev.title}</bdi></h4>
+                                    <p style="margin:0; font-size:12px; color:#7f8c8d; display:flex; gap:6px; align-items:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; unicode-bidi:plaintext;">
+                                        <i class="fa-solid fa-hospital"></i> <bdi>${ev.hospital_name || ev.hospital_id}</bdi>
+                                    </p>
+                                </div>
+                                ${ev.poster_path ? `
+                                <button class="view-poster-btn" data-poster="${ev.poster_path}" title="${posterBtnText}" style="padding: 6px 10px; font-size: 12px; font-weight: 500; border-radius: 6px; border: 1px solid var(--primary-blue); background: transparent; color: var(--primary-blue); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; flex-shrink:0;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='var(--primary-blue)';">
+                                    <i class="fa-regular fa-image"></i> <span>${posterBtnText}</span>
+                                </button>
+                                ` : `
+                                <button class="view-poster-btn disabled" disabled title="${noPosterBtnText}" style="padding: 6px 10px; font-size: 12px; font-weight: 500; border-radius: 6px; border: 1px solid #e0e0e0; background: #f5f5f5; color: #b5b5b5; cursor: not-allowed; display: flex; align-items: center; justify-content: center; gap: 6px; flex-shrink:0;">
+                                    <i class="fa-solid fa-eye-slash"></i> <span>${noPosterBtnText}</span>
+                                </button>
+                                `}
+                            </div>
+                        `;
+                    });
+                }
+            } catch(e) {
+                console.error("Error loading sidebar", e);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadUpcomingSidebar);
+        window.addEventListener('languageChanged', loadUpcomingSidebar);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="lang.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+        <!-- Micro Footer -->
+    <div style="text-align: center; padding: 15px; font-size: 13px; color: #4b5563; background: #ffffff; border-top: 1px solid #e5e7eb; position: relative; z-index: 10; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.02);">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <span style="font-weight: 600;">&copy; 2026 NurSync</span>
+            <span style="color: #d1d5db;">|</span>
+            <a href="mailto:health.nursync@gmail.com" style="color: var(--primary-blue); text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-headset"></i> Tech Support</a>
+            <span style="color: #d1d5db;">|</span>
+            <span style="font-family: 'Roboto Mono', monospace; font-weight: 500;">v1.0.2</span>
+        </div>
+    </div>
+</body>
+</html>
